@@ -13,4 +13,8 @@ class Product extends Model
         'name',
         'available_stock'
     ];
+
+    public function orders() {
+        return $this->hasMany(Order::class);
+    }
 }

@@ -74,36 +74,30 @@ class User extends Controller
         
         $userEmail = ModelsUser::where('email', request('email'))
         ->first();
-
-        if(!$user && $user !== null) {
-            if ($userEmail !== null) {
-                if (!$userEmail['locked_at']) {
-                    if ($userEmail['failed_attempts'] > 4) {
-                        $userEmail->locked_at = $now->toDateTimeString();
-                        $userEmail->save();
-                    } else {
+        
+        if ($userEmail !== null) {
+            if ($userEmail['locked_at'] === null) {
+                if ($userEmail['failed_attempts'] > 4) {
+                    $userEmail->locked_at = $now->toDateTimeString();
+                    $userEmail->save();
+                } else {
+                    if (!$user) {
                         $userEmail->failed_attempts = $userEmail['failed_attempts'] + 1;
                         $userEmail->save();
                     }
-                } else {
-                    $locked_at = Carbon::createFromFormat('Y-m-d H:i:s', $userEmail['locked_at']);
-                    $locked_at->addMinutes(5);
-    
-                    if($now->greaterThan($locked_at)) {
-                        $userEmail->failed_attempts = 1;
-                        $userEmail->locked_at = null;
-                        $userEmail->save();
-                    } else {
-                        return response()->json(['message' => 'Your account has been locked for 5mins'], 401);
-                    }
-                    
                 }
-            }
-        } else {
-            if ($userEmail !== null) {
-                $userEmail->failed_attempts = $userEmail['failed_attempts'] + 1;
-                $userEmail->locked_at = null;
-                $userEmail->save();
+            } else {
+                $locked_at = Carbon::createFromFormat('Y-m-d H:i:s', $userEmail['locked_at']);
+                $locked_at->addMinutes(5);
+
+                if($now->greaterThan($locked_at)) {
+                    $userEmail->failed_attempts = 1;
+                    $userEmail->locked_at = null;
+                    $userEmail->save();
+                } else {
+                    return response()->json(['message' => 'Your account has been locked for 5mins'], 401);
+                }
+                
             }
         }
 
