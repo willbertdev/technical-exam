@@ -6,7 +6,7 @@ use Tests\TestCase;
 
 class OrderTest extends TestCase
 {
-    public function test_success_login() {
+    public function test_success_order() {
         $response = $this->post('/api/order',[
             'product_id' => '1',
             'quantity' => '1'
@@ -17,7 +17,7 @@ class OrderTest extends TestCase
         $response->assertStatus(201);
     }
 
-    public function test_unsuccess_login() {
+    public function test_unsuccess_order() {
         $response = $this->post('/api/order',[
             'product_id' => '2',
             'quantity' => '9999'

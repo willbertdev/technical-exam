@@ -12,11 +12,6 @@ class RegistrationTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
-    {
-        $this->assertTrue(true);
-    }
-
 
     public function test_success_regitration() {
         
