@@ -71,8 +71,8 @@ class User extends Controller
             ->where('password', request('password'))
             ->first();
         $now = Carbon::now();
-
-        if(!$user) {
+        
+        if(!$user && $user !== null) {
             $userEmail = ModelsUser::where('email', request('email'))
             ->first();
             
@@ -98,9 +98,11 @@ class User extends Controller
                 
             }
         } else {
-            $user->failed_attempts = 1;
-            $user->locked_at = null;
-            $user->save();
+            if ($user !== null) {
+                $user->failed_attempts = 1;
+                $user->locked_at = null;
+                $user->save();
+            }
         }
 
         $this->json = $user ? ['access_token' => $user['remember_token']] : ['message' => 'Invalid credentials'];
